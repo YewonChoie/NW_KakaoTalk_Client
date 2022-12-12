@@ -37,6 +37,18 @@ public class ImageResizer {
         }
     }
 
+    public static void FriendBoardImage(JButton[] btnGroup) {
+        for (JButton btn : btnGroup) {
+            ImageIcon btnIcon = (ImageIcon)btn.getIcon();
+            Image btnImage = btnIcon.getImage();
+
+            Image newImage = btnImage.getScaledInstance(25, 25, Image.SCALE_SMOOTH);
+            ImageIcon newIcon = new ImageIcon(newImage);
+
+            btn.setIcon(newIcon);
+        }
+    }
+
     public static void UserBoardSetting(JLabel lblSetting) {
         ImageIcon icon = (ImageIcon)lblSetting.getIcon();
         Image image = icon.getImage();

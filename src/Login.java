@@ -28,14 +28,13 @@ public class Login extends JFrame {
     private JButton btnLogin;
     private JButton btnRegist;
 
+    private ServerInfo info;
     private Socket socket;
     private Scanner clientInput;
     private PrintWriter clientOutput;
 
 
     private boolean isLogin = false;
-
-    private ServerInfo info;
 
     private void ClearForm() {
         txtId.setText("");
@@ -94,7 +93,9 @@ public class Login extends JFrame {
 
                             if (loginResult.equals("true")) {
                                 JOptionPane.showMessageDialog(mainPanel, "Login Success.", "Notice", JOptionPane.INFORMATION_MESSAGE);
-                                MainBoard mainBoard = new MainBoard();
+                                info.serverPort = 20815;
+
+                                MainFrame mainFrame = new MainFrame(serverInfo, String.valueOf(object.get("nickname")));
                                 dispose();
                             }
                             else {
