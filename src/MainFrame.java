@@ -1,5 +1,9 @@
 import ImageResizer.ImageResizer;
 import Object.ServerInfo;
+import Utilization.Util;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 import javax.swing.*;
 import java.awt.*;
@@ -10,7 +14,6 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
-import java.sql.SQLException;
 import java.util.Scanner;
 
 public class MainFrame extends JFrame {
@@ -28,6 +31,9 @@ public class MainFrame extends JFrame {
     private JButton btnMore;
     private JPanel leftFrame;
     private JPanel fieldPanel;
+    private JLabel lblField;
+    private JButton btnAdd;
+    private JButton btnLogout;
 
 
     private static JPanel target;
@@ -95,14 +101,10 @@ public class MainFrame extends JFrame {
         btnFriend.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                FriendBoard friendBoard = new FriendBoard(user, socket);
-
-                fieldPanel.removeAll();
-                fieldPanel.add(friendBoard.getFieldPanel());
-                // 필드 패널 재배치
+                lblField.setText("친구");
 
                 mainPanel.removeAll();
-                mainPanel.add(friendBoard.getScrFriend());
+                mainPanel.add(new FriendBoard(user, socket).getMainPanel());
                 // 메인 패널 재배치
 
                 mainPanel.revalidate();
@@ -125,25 +127,89 @@ public class MainFrame extends JFrame {
             }
         }); // 더보기 버튼
 
+        btnLogout.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try{
+                    clientInput = new Scanner(new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8));
+                    clientOutput = new PrintWriter(new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8), true);
+                    // 인풋 아웃풋 연결
+
+                    String logoutJSON = Util.createSingleJSON(3003, "logout", user);
+                    clientOutput.println(logoutJSON);
+
+                    if (clientInput.hasNextLine()) {
+                        String serverOutput = new String();
+
+                        try {
+                            serverOutput = clientInput.nextLine();
+                            if (serverOutput.isEmpty()) serverOutput = clientInput.nextLine();
+                            // 서버로부터 수신
+
+                            JSONParser parser = new JSONParser();
+                            JSONObject object = (JSONObject) parser.parse(serverOutput);
+                            // JSON 파싱
+
+                            int response = Integer.parseInt(String.valueOf(object.get("code")));
+                            // 응답 코드 확인
+
+                            if (response == 200) {
+                                String logoutResult = String.valueOf(object.get("logout"));
+                                System.out.println(logoutResult);
+                                // 로그아웃 요청 결과
+
+                                if (logoutResult.equals("true")) {
+                                    JOptionPane.showMessageDialog(mainPanel, "Logout Success.", "Notice", JOptionPane.INFORMATION_MESSAGE);
+
+                                    clientInput.close();
+                                    clientOutput.close();
+                                    socket.close();
+                                    // 소켓 연결 해제
+
+                                    dispose();
+                                } // 로그아웃이 된 경우
+                                else {
+                                    JOptionPane.showMessageDialog(mainPanel, "Logout Failed.", "Warning", JOptionPane.WARNING_MESSAGE);
+                                } // 로그아웃이 되지 않은 경우
+                            } // 서버가 요청을 정상적으로 처리한 경우
+                            else {
+                                System.out.println("Logout Error");
+                            } // 비정상적으로 처리된 경우
+                        } catch (ParseException ex) {
+                            throw new RuntimeException(ex);
+                        } catch (IOException ex) {
+                            throw new RuntimeException(ex);
+                        }
+                    }
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
+            }
+        }); // 로그아웃
+
+        JButton[] btnGroup2 = new JButton[2];
+        btnGroup2[0] = btnSearch;
+        btnGroup2[1] = btnAdd;
+        // 버튼 그룹지정
+        ImageResizer.FriendBoardImage(btnGroup2);
+
         JButton[] btnGroup = new JButton[3];
         btnGroup[0] = btnFriend;
         btnGroup[1] = btnChat;
         btnGroup[2] = btnMore;
         // 버튼 그룹 지정
+        ImageResizer.InterfaceImage(btnGroup);
 
         setContentPane(mainFrame);
 
-        FriendBoard friendBoard = new FriendBoard(user, socket);
+        lblField.setText("친구");
 
-        fieldPanel.setLayout(new GridLayout(1, 1));
         mainPanel.setLayout(new GridLayout(1, 1));
-        fieldPanel.add(friendBoard.getFieldPanel());
-        mainPanel.add(friendBoard.getScrFriend());
+        mainPanel.add(new FriendBoard(user, socket).getMainPanel());
         target = mainPanel;
         // 처음 패널 불러오기
 
         setSize(450, 600);
-        ImageResizer.InterfaceImage(btnGroup);
 
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("KakaoTalk - " + user);

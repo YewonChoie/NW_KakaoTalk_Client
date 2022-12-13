@@ -24,31 +24,27 @@ public class FriendBoard extends JFrame {
     private ServerInfo info;
 
     private JPanel mainPanel;
-    private JPanel fieldPanel;
 
-    public JPanel getFieldPanel() {
-        return fieldPanel;
+    public JPanel getMainPanel() {
+        return mainPanel;
     }
 
-    public JScrollPane getScrFriend() {
-        return scrFriend;
-    }
-
-    private JLabel lblField;
-    private JButton btnSearch;
-    private JButton btnAdd;
     private JScrollPane scrFriend;
     private JPanel container;
     private JTextField txtSearch;
-    private JPanel friendPanel;
 
     private Socket socket;
-
     public Socket getSocket() {
         return socket;
     }
-
     private Scanner clientInput;
+    public Scanner getClientInput() {
+        return clientInput;
+    }
+    public PrintWriter getClientOutput() {
+        return clientOutput;
+    }
+
     private PrintWriter clientOutput;
 
     private ArrayList<User> searched;
@@ -92,7 +88,7 @@ public class FriendBoard extends JFrame {
                 if (response == 200) {
                     String message = String.valueOf(object.get("msg"));
 
-                    JPanel con = new Container(user, message).getContainer();
+                    JPanel con = new Container(user).getContainer();
 
                     container.add(con);
                     // 유저 정보 화면에 출력
@@ -146,18 +142,13 @@ public class FriendBoard extends JFrame {
                                 container.removeAll();
 
                                 ArrayList<String> searchedUser = new ArrayList<String>(Arrays.asList(String.valueOf(object.get("searched")).split(",")));
+                                ArrayList<String> userMessage = new ArrayList<String>(Arrays.asList(String.valueOf(object.get("message")).split(",")));
                                 for (int i = 0; i < searchedUser.size(); i++) {
-                                    JLabel lbl = new JLabel();
-                                    lbl.setText(searchedUser.get(i));
+                                    JPanel con = new Container(searchedUser.get(i)).getContainer();
+
                                     System.out.println(searchedUser.get(i));
-                                    lbl.addMouseListener(new MouseAdapter() {
-                                        @Override
-                                        public void mouseClicked(MouseEvent e) {
 
-                                        }
-                                    }); // 유저 정보 클릭 시
-
-                                    container.add(lbl);
+                                    container.add(con);
                                     // lbl 추가
                                 }
                             } // 유저를 찾은 경우
@@ -166,6 +157,8 @@ public class FriendBoard extends JFrame {
                             } // 유저를 찾지 못한 경우
                             MainFrame.getTarget().removeAll();
                             MainFrame.getTarget().add(mainPanel);
+//                            MainFrame.getTarget().revalidate();
+//                            MainFrame.getTarget().repaint();
                             txtSearch.requestFocus();
                             // 메인 프레임에 새로고칭
                         } else {
@@ -177,12 +170,5 @@ public class FriendBoard extends JFrame {
                 } // 서버로부터 결과를 수신한 경우
             }
         }); // 검색 기능
-
-        JButton[] btnGroup = new JButton[2];
-        btnGroup[0] = btnSearch;
-        btnGroup[1] = btnAdd;
-        // 버튼 그룹지정
-        
-        ImageResizer.FriendBoardImage(btnGroup);
     }
 }
