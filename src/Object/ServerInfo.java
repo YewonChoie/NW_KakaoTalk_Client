@@ -7,5 +7,6 @@ public class ServerInfo {
     public ServerInfo(String serverIP, int serverPort) {
         this.serverIP = serverIP;
         this.serverPort = serverPort;
+        // 서버 정보
     }
 }

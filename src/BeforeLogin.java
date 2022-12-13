@@ -21,20 +21,20 @@ public class BeforeLogin extends JFrame {
            public void actionPerformed(ActionEvent e) {
                Login login = new Login(info);
            }
-        });
+        }); // 로그인 버튼 -> 로그인 창
 
         btnRegist.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Registration registration = new Registration(info);
             }
-        });
+        }); // 회원가입 버튼 -> 회원가입 창
 
         setContentPane(mainPanel);
 
         setSize(600, 400);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        setTitle("Instagram Main Screen");
+        setTitle("KakaoTalk Main Screen");
         setVisible(true);
     }
 }

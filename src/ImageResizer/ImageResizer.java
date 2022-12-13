@@ -13,7 +13,7 @@ public class ImageResizer {
         ImageIcon newIcon = new ImageIcon(newImage);
 
         lbl.setIcon(newIcon);
-    }
+    } // 로그인창 이미지 크기 설정
 
     public static void MainBoardImage(JLabel lbl) {
         ImageIcon icon = (ImageIcon)lbl.getIcon();
@@ -35,7 +35,7 @@ public class ImageResizer {
 
             btn.setIcon(newIcon);
         }
-    }
+    } // 인터페이스 이미지 크기 설정
 
     public static void FriendBoardImage(JButton[] btnGroup) {
         for (JButton btn : btnGroup) {
@@ -47,7 +47,7 @@ public class ImageResizer {
 
             btn.setIcon(newIcon);
         }
-    }
+    } // FriendBoard 이미지 크기 조정
 
     public static void UserBoardSetting(JLabel lblSetting) {
         ImageIcon icon = (ImageIcon)lblSetting.getIcon();

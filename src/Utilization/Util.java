@@ -18,12 +18,11 @@ public class Util {
         ServerInfo info = new ServerInfo("localhost", 20814);
 
         try {
-            // 파일에서 접속 정보 가져오기
             File serverDataFile = new File("config.dat");
             FileReader fileReader = new FileReader(serverDataFile);
             BufferedReader bufferedReader = new BufferedReader(fileReader);
+            // 파일에서 접속 정보 불러오기
 
-            // Connection Info를 담고 있는 파일은 첫 번째 줄에 서버 주소, 두 번째 줄에 포트 넘버를 가지고 있음.
             info.serverIP = bufferedReader.readLine();
             info.serverPort = Integer.parseInt(bufferedReader.readLine());
         } catch (Exception e) {
@@ -31,7 +30,7 @@ public class Util {
         }
 
         return info;
-    }
+    } // 서버 정보 가져오기
 
     public static String encryptSHA512(String originalString) {
         try {
@@ -43,7 +42,7 @@ public class Util {
         } catch (NoSuchAlgorithmException e) {
             return "";
         }
-    }
+    } // SHA512로 비밀번호 암호화
 
     public static String createJSON(int code, HashMap<String, Object> elements) {
         JSONObject json = new JSONObject();
@@ -58,7 +57,7 @@ public class Util {
         }
 
         return json.toString();
-    }
+    } // JSON 생성
 
     public static String createSingleJSON(int code, String key, String value) {
         JSONObject json = new JSONObject();
@@ -66,5 +65,5 @@ public class Util {
         json.put(key, value);
 
         return json.toString();
-    }
+    } // 싱글 키 JSON 생성
 }
